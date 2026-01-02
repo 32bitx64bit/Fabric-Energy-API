@@ -1,17 +1,17 @@
 {
 	"schemaVersion": 1,
-	"id": "modid",
+	"id": "fabric-energy-api",
 	"version": "${version}",
-	"name": "Example mod",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"name": "Fabric Energy API",
+	"description": "A standardized energy API for Fabric mods.",
 	"authors": [
-		"Me!"
+		"Gavinx"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "",
+		"sources": "https://github.com/32bitx64bit/Fabric-Energy-API"
 	},
-	"license": "CC0-1.0",
+	"license": "GPL-3.0",
 	"icon": "assets/modid/icon.png",
 	"environment": "*",
 	"entrypoints": {
