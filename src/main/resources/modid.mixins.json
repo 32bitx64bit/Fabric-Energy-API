@@ -3,7 +3,6 @@
 	"package": "gavinx.fea.mixin",
 	"compatibilityLevel": "JAVA_17",
 	"mixins": [
-		"ExampleMixin",
 		"WorldSetBlockStateMixin"
 	],
 	"injectors": {
