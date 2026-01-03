@@ -127,6 +127,7 @@ FEGeneration.tickGenerateTo(energyStorage, 40, isBurning, false);
 - `gavinx.fea.api.FEGeneration` – generation helpers (FE/t)
 - `gavinx.fea.network.FECableTransfer` – pathfind + distribute through cables
 - `gavinx.fea.network.FECableNetworkStats` – query total stored/capacity (useful for auto-off)
+- `gavinx.fea.api.FELinkPoint` + `FEApi.LINK_POINT` – endpoints for rope/wire/wireless systems
 
 ## Examples
 
@@ -183,6 +184,54 @@ FEApi.BLOCK_ENERGY.registerForBlocks(
 	(world, pos, state, ctx) -> def,
 	MY_MACHINE_BLOCK
 );
+
+### Link points (sockets) for ropes/wires/wireless
+
+If you want a non-block connection system (ropes, wires between sockets, wireless relays), blocks can expose
+`FELinkPoint` endpoints. A wire mod can use these endpoints to discover ports and enforce per-port limits.
+
+Block side (expose ports):
+
+```java
+import gavinx.fea.api.FEApi;
+import gavinx.fea.api.FELinkPoint;
+import gavinx.fea.api.FESideMode;
+
+FELinkPoint copperPort = new FELinkPoint() {
+	@Override
+	public FESideMode getMode() {
+		return FESideMode.BOTH;
+	}
+
+	@Override
+	public long getTransferLimitFE() {
+		return 2_500; // FE/t
+	}
+};
+
+FEApi.LINK_POINT.registerForBlocks(
+	(world, pos, state, side) -> copperPort,
+	MY_SOCKET_BLOCK
+);
+```
+
+Wire/rope mod side (query endpoints + storage):
+
+```java
+import gavinx.fea.api.FEApi;
+import gavinx.fea.api.FELinkPoint;
+import gavinx.fea.api.FEStorage;
+
+FELinkPoint a = FEApi.LINK_POINT.find(world, posA, sideA);
+FELinkPoint b = FEApi.LINK_POINT.find(world, posB, sideB);
+if (a == null || b == null) return;
+
+long limit = Math.min(a.getTransferLimitFE(), b.getTransferLimitFE());
+
+FEStorage from = FEApi.STORAGE.find(world, posA, sideA);
+FEStorage to = FEApi.STORAGE.find(world, posB, sideB);
+// use FETransfer/transactions and respect a.getMode()/b.getMode() as your connection rules
+```
 ```
 
 ### Cables + network transfer

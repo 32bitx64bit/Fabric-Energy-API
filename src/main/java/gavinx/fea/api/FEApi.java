@@ -34,6 +34,16 @@ public final class FEApi {
 			Void.class
 	);
 
+	/**
+	 * Optional link point (socket) capability for non-block connections (ropes/wires/wireless).
+	 * Use the {@link Direction} context to represent the port side.
+	 */
+	public static final BlockApiLookup<FELinkPoint, Direction> LINK_POINT = BlockApiLookup.get(
+			new Identifier(FeaMod.MOD_ID, "fe_link_point"),
+			FELinkPoint.class,
+			Direction.class
+	);
+
 	/** ItemStack lookup for exposing {@link FEStorage} from items (batteries, tools, etc). */
 	public static final ItemApiLookup<FEStorage, Void> ITEM_STORAGE = ItemApiLookup.get(
 			new Identifier(FeaMod.MOD_ID, "fe_item_storage"),
