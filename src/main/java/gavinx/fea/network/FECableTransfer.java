@@ -94,12 +94,14 @@ public final class FECableTransfer {
 		try (Transaction outer = Transaction.openOuter()) {
 			for (Target target : targets) {
 				if (remaining <= 0) break;
+				if (target.pos.equals(sourcePos)) continue;
 
 				FEBlockEnergy consumerDef = FEApi.BLOCK_ENERGY.find(world, target.pos, null);
 				if (consumerDef != null && !consumerDef.getSideMode(target.side).canInsert()) continue;
 
 				FEStorage consumer = FEApi.STORAGE.find(world, target.pos, target.side);
 				if (consumer == null || !consumer.supportsInsertion()) continue;
+				if (consumer == source) continue;
 
 				long pathCap = Math.min(remaining, target.capacity);
 				if (pathCap <= 0) continue;

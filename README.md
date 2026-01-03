@@ -187,6 +187,8 @@ FEApi.BLOCK_ENERGY.registerForBlocks(
 
 ### Cables + network transfer
 
+Note: cable movement is **push-based**. Nothing will “auto flow” unless a block actively calls `FECableTransfer.distributeFrom(...)` (typically each server tick).
+
 Expose a cable capability (you can use the `Direction` context to make a face non-connectable by returning `null`):
 
 ```java
