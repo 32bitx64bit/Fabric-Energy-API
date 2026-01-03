@@ -126,6 +126,7 @@ FEGeneration.tickGenerateTo(energyStorage, 40, isBurning, false);
 - `gavinx.fea.api.FE` – convenience find/insert/extract/consumeExact for world + items
 - `gavinx.fea.api.FEGeneration` – generation helpers (FE/t)
 - `gavinx.fea.network.FECableTransfer` – pathfind + distribute through cables
+- `gavinx.fea.network.FECableNetworkStats` – query total stored/capacity (useful for auto-off)
 
 ## Examples
 
@@ -216,6 +217,18 @@ Push FE through the cable network from a source side:
 import gavinx.fea.network.FECableTransfer;
 
 long extractedPreLoss = FECableTransfer.distributeFrom(serverWorld, sourcePos, sourceSide, 1_000, false);
+```
+
+Check if the connected network is “full” (no insertable space), e.g. for a generator auto-off:
+
+```java
+import gavinx.fea.network.FECableNetworkStats;
+
+FECableNetworkStats.Stats stats = FECableNetworkStats.getInsertableTotalsFrom(serverWorld, generatorPos, outputSide);
+boolean networkFull = stats.isFull();
+if (!networkFull) {
+	// produce/push FE this tick
+}
 ```
 
 ## FE Spec (Compatibility)
