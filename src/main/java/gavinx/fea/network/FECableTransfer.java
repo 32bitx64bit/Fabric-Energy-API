@@ -200,23 +200,23 @@ public final class FECableTransfer {
 				BlockPos neighborPos = curPos.offset(out);
 				Direction neighborEnter = out.getOpposite();
 
-				// If the neighbor is a cable, traverse.
-				if (network.cables.contains(neighborPos.asLong())) {
-					FECable nextCable = FEApi.CABLE.find(world, neighborPos, neighborEnter);
-					if (nextCable != null) {
-						int nextR = clampPercent(cur.resistance + nextCable.getResistancePercentClamped());
-						long nextC = Math.min(cur.capacity, Math.max(0L, nextCable.getTransferCapacityFE()));
-						int nextIdx = neighborEnter.getId();
-						long nextPosLong = neighborPos.asLong();
+				// If the neighbor exposes a cable on the opposite side, traverse.
+				// This intentionally does not rely on cached network membership; it prevents false dead-ends
+				// in cyclic networks or in edge cases where the network cache is temporarily stale.
+				FECable nextCable = FEApi.CABLE.find(world, neighborPos, neighborEnter);
+				if (nextCable != null) {
+					int nextR = clampPercent(cur.resistance + nextCable.getResistancePercentClamped());
+					long nextC = Math.min(cur.capacity, Math.max(0L, nextCable.getTransferCapacityFE()));
+					int nextIdx = neighborEnter.getId();
+					long nextPosLong = neighborPos.asLong();
 
-						int prevR = bestRes[nextIdx].get(nextPosLong);
-						long prevC = bestCap[nextIdx].get(nextPosLong);
-						boolean better = nextR < prevR || (nextR == prevR && nextC > prevC);
-						if (better) {
-							bestRes[nextIdx].put(nextPosLong, nextR);
-							bestCap[nextIdx].put(nextPosLong, nextC);
-							pq.add(new State(nextPosLong, neighborEnter, nextR, nextC));
-						}
+					int prevR = bestRes[nextIdx].get(nextPosLong);
+					long prevC = bestCap[nextIdx].get(nextPosLong);
+					boolean better = nextR < prevR || (nextR == prevR && nextC > prevC);
+					if (better) {
+						bestRes[nextIdx].put(nextPosLong, nextR);
+						bestCap[nextIdx].put(nextPosLong, nextC);
+						pq.add(new State(nextPosLong, neighborEnter, nextR, nextC));
 					}
 					continue;
 				}
